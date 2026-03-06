@@ -180,7 +180,7 @@ Media ..> StorageService : stored via
 
 @enduml
 ```
-![img.png](static-attachments/img.png)
+![img.png](static-attachments/class-diagram.png)
 ---
 
 # Activity Diagram
@@ -229,8 +229,8 @@ stop
 ```
 ---
 
-![img_1.png](static-attachments/img_1.png)
-![img_2.png](static-attachments/img_2.png)
+![img_1.png](static-attachments/activity-diagram.png)
+![img_2.png](static-attachments/activity-diagram-second.png)
 
 # Sequence Diagram
 
@@ -270,7 +270,7 @@ end
 
 @enduml
 ```
-![img_3.png](static-attachments/img_3.png)
+![img_3.png](static-attachments/sequence-diagram.png)
 
 ---
 
@@ -307,4 +307,4 @@ rectangle "CMS Platform" {
 @enduml
 ```
 
-![img.png](static-attachments/img.png)
+![img.png](static-attachments/use-case-diagram.png)
