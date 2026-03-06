@@ -180,7 +180,7 @@ Media ..> StorageService : stored via
 
 @enduml
 ```
-![img_4.png](static-attachments/img_4.png)
+![img.png](static-attachments/img.png)
 ---
 
 # Activity Diagram
