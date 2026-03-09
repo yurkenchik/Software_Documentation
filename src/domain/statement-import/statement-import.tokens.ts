@@ -1,1 +1,2 @@
 export const FILE_STORAGE_PORT = Symbol('FILE_STORAGE_PORT');
+export const ROW_OUTPUT_STRATEGY = Symbol('ROW_OUTPUT_STRATEGY');
