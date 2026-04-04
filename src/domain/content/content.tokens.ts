@@ -1,0 +1,3 @@
+export const POST_REPOSITORY = Symbol('POST_REPOSITORY');
+export const COMMENT_REPOSITORY = Symbol('COMMENT_REPOSITORY');
+export const MEDIA_REPOSITORY = Symbol('MEDIA_REPOSITORY');
