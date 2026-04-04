@@ -8,6 +8,7 @@ import {
     Param,
     Patch,
     Post,
+    Render,
     UsePipes,
     ValidationPipe,
 } from '@nestjs/common';
@@ -16,6 +17,9 @@ import { CreateSiteRequestDto } from '@application/site/dto/request/create-site-
 import { UpdateSiteRequestDto } from '@application/site/dto/request/update-site-request.dto';
 import { SiteResponseDto } from '@application/site/dto/response/site-response.dto';
 
+/**
+ * JSON REST for sites under the global `api` prefix → `/api/sites`.
+ */
 @Controller('sites')
 @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
 export class SiteController {
@@ -46,5 +50,20 @@ export class SiteController {
     @HttpCode(HttpStatus.NO_CONTENT)
     async remove(@Param('id') id: string): Promise<void> {
         await this.siteService.deleteSite(id);
+    }
+}
+
+/**
+ * HTML (ЛР3): excluded from global `api` prefix in `main.ts` → `GET /sites`.
+ */
+@Controller()
+export class SiteHtmlController {
+    constructor(private readonly siteService: SiteService) {}
+
+    @Get('sites')
+    @Render('sites/index')
+    async sitesList(): Promise<{ sites: Awaited<ReturnType<SiteService['listSites']>> }> {
+        const sites = await this.siteService.listSites();
+        return { sites };
     }
 }

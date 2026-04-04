@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { StatementImportModule } from '@application/statement-import/statement-import.module';
 import { SiteModule } from '@domain/site/site.module';
-import { SitesWebModule } from '@presentation/http/sites-web.module';
 
 @Module({
     imports: [
@@ -17,7 +16,6 @@ import { SitesWebModule } from '@presentation/http/sites-web.module';
         }),
         StatementImportModule,
         SiteModule,
-        SitesWebModule,
     ],
     controllers: [],
     providers: [],

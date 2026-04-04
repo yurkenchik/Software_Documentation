@@ -42,6 +42,24 @@ REST uses global prefix **`api`**. Server listens on `http://localhost:<PORT>` (
   - `POST /api/import/csv` – import statements from CSV
   - `POST /api/import/csv/stream` – stream CSV rows
 
+## Laboratory work 3 (ЛР3) — where the code lives
+
+MVC-style slice for the **sites** entity (методичка: контролер → бізнес-логіка → представлення HTML):
+
+| ЛР3 пункт | У проєкті |
+|-----------|-----------|
+| Контролери (HTTP) | `src/presentation/http/site.controller.ts` — `SiteController` (`/api/sites`, JSON), `SiteHtmlController` (`GET /sites` → `@Render('sites/index')`) |
+| Бізнес-логіка / вичитка для сторінки й API | `src/application/site/site.service.ts` (`listSites` тощо) |
+| Доменна модель і правила | `src/domain/site/entities/site-domain.entity.ts`, `site-entity.props.ts`, винятки в `src/domain/site/exceptions/` |
+| Доступ до даних | `src/infrastructure/persistence/mongodb/repositories/mongo-site.repository.ts`, схема `schemas/site-mongo.schema.ts` |
+| HTML (представлення) | `src/presentation/http/views/sites/index.hbs`, головна `views/home.hbs`, парціали в `views/partials/` |
+| Підключення HBS і виняток `/sites` з префікса `api` | `src/main.ts` |
+| Модулі | `src/domain/site/site.module.ts` — обидва контролери, експорт `SiteService` |
+
+Повний ЛР3 ще вимагає **HTML-форм для додавання / редагування / видалення** (п.4 методички); зараз реалізовано **список** і повний **JSON CRUD** під `/api/sites`.
+
+Якщо після помилкового `git reset --hard` гілка знову «старіша» за ці зміни, відновіть останній коміт з роботою: **`git reset --hard bbbae1b`** (або відповідний хеш з `git reflog`).
+
 ## Suggested commit history (Axiomera-style)
 
 Messages follow **axiomera-server** (past tense, short sentences; no `feat:` / `fix:`).  
@@ -96,7 +114,7 @@ git commit -m "Added create post with media use case and request DTO"
 ```bash
 git add \
   src/application/site \
-  src/presentation/controllers/site.controller.ts \
+  src/presentation/http/site.controller.ts \
   src/presentation/filters/domain-exception.filter.ts \
   src/domain/site/site.module.ts
 git commit -m "Wired SiteModule with SiteService, REST controller, and domain exception mapping"
@@ -107,9 +125,7 @@ git add \
   src/app.module.ts \
   src/main.ts \
   src/types/hbs.d.ts \
-  src/presentation/http/views \
-  src/presentation/http/sites-web.controller.ts \
-  src/presentation/http/sites-web.module.ts
+  src/presentation/http/views
 git commit -m "Registered app bootstrap, Handlebars views, and HTML site list outside api prefix"
 ```
 
