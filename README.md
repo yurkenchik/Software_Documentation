@@ -23,7 +23,24 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Layered NestJS app: sites (domain + REST + Handlebars list), statement import from CSV (Kafka/console), MongoDB persistence.
+
+## API
+
+REST uses global prefix **`api`**. Server listens on `http://localhost:<PORT>` (see `PORT` in `.env`, default in code may vary). Routes **`GET /`** and **`GET /sites`** are registered **outside** the `api` prefix (HTML via Handlebars).
+
+- **Pages (HTML):**
+  - `GET /` – home (Handlebars)
+  - `GET /sites` – list sites as HTML (data from `SiteService`)
+- **Sites (JSON):**
+  - `POST /api/sites` – create site (201 + body)
+  - `GET /api/sites` – list sites
+  - `GET /api/sites/:id` – get site by id
+  - `PATCH /api/sites/:id` – update site (full body, same shape as create)
+  - `DELETE /api/sites/:id` – delete site (204)
+- **Statement import:**
+  - `POST /api/import/csv` – import statements from CSV
+  - `POST /api/import/csv/stream` – stream CSV rows
 
 ## Project setup
 
