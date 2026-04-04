@@ -15,7 +15,7 @@ import { SiteRowHandler } from '@application/statement-import/strategies/site-ro
 import { PostRowHandler } from '@application/statement-import/strategies/post-row.handler';
 import { CommentRowHandler } from '@application/statement-import/strategies/comment-row.handler';
 import { MediaRowHandler } from '@application/statement-import/strategies/media-row.handler';
-import { ImportController } from '@presentation/controllers/import.controller';
+import { ImportController } from '@presentation/http/import.controller';
 
 @Module({
     controllers: [ImportController],
