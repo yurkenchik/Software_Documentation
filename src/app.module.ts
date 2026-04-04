@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { StatementImportModule } from '@application/statement-import/statement-import.module';
+import { SiteModule } from '@domain/site/site.module';
+import { SitesWebModule } from '@presentation/http/sites-web.module';
 
 @Module({
     imports: [
@@ -14,6 +16,8 @@ import { StatementImportModule } from '@application/statement-import/statement-i
             }),
         }),
         StatementImportModule,
+        SiteModule,
+        SitesWebModule,
     ],
     controllers: [],
     providers: [],
