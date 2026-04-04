@@ -42,6 +42,92 @@ REST uses global prefix **`api`**. Server listens on `http://localhost:<PORT>` (
   - `POST /api/import/csv` – import statements from CSV
   - `POST /api/import/csv/stream` – stream CSV rows
 
+## Suggested commit history (Axiomera-style)
+
+Messages follow **axiomera-server** (past tense, short sentences; no `feat:` / `fix:`).  
+Below you can **copy each block** from `git add` through `git commit` and run in order (e.g. on a fresh branch after `git rm -r --cached .` and `git clean` of tracked files, or when splitting an initial import).
+
+> **Note:** Commits **1–6** do not include `src/main.ts` or `src/app.module.ts`. The app is in a runnable state after **commit 7**. If you need `yarn start` after an earlier step, add those two files to that step’s `git add` list (or squash 1 and 7).
+
+```bash
+git add \
+  tsconfig.json \
+  tsconfig.build.json \
+  package.json \
+  yarn.lock \
+  nest-cli.json \
+  test/jest-e2e.json \
+  src/shared \
+  src/core/exceptions/domain.exception.ts
+git commit -m "Migrated Nest starter to layered layout with path aliases and dependencies"
+```
+
+```bash
+git add src/core/exceptions/exception-codes.ts \
+  src/domain/content \
+  src/domain/statement-import \
+  src/domain/site/site.tokens.ts \
+  src/domain/site/site-entity.props.ts \
+  src/domain/site/entities \
+  src/domain/site/repositories \
+  src/domain/site/exceptions
+git commit -m "Added domain models for content, statement import, and site aggregate"
+```
+
+```bash
+git add \
+  src/infrastructure/persistence/mongodb \
+  src/infrastructure/persistence/kafka \
+  src/infrastructure/output \
+  src/infrastructure/files
+git commit -m "Added Mongoose repositories and Kafka or console output adapters"
+```
+
+```bash
+git add src/application/statement-import src/presentation/http/import.controller.ts
+git commit -m "Implemented statement import module with CSV use cases and HTTP controller"
+```
+
+```bash
+git add src/application/content
+git commit -m "Added create post with media use case and request DTO"
+```
+
+```bash
+git add \
+  src/application/site \
+  src/presentation/controllers/site.controller.ts \
+  src/presentation/filters/domain-exception.filter.ts \
+  src/domain/site/site.module.ts
+git commit -m "Wired SiteModule with SiteService, REST controller, and domain exception mapping"
+```
+
+```bash
+git add \
+  src/app.module.ts \
+  src/main.ts \
+  src/types/hbs.d.ts \
+  src/presentation/http/views \
+  src/presentation/http/sites-web.controller.ts \
+  src/presentation/http/sites-web.module.ts
+git commit -m "Registered app bootstrap, Handlebars views, and HTML site list outside api prefix"
+```
+
+```bash
+git add src/tools
+git commit -m "Added CLI tools to generate and stream sample CSV data"
+```
+
+```bash
+git add src/__tests__
+git commit -m "Added unit tests for import and create post use cases"
+```
+
+```bash
+git add README.md
+git commit -m "Documented HTTP endpoints and example commit sequence in README"
+```
+
 ## Project setup
 
 ```bash
