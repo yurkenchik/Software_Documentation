@@ -54,13 +54,13 @@ export class SiteController {
 }
 
 /**
- * HTML (ЛР3): excluded from global `api` prefix in `main.ts` → `GET /sites`.
+ * HTML (ЛР3): kept outside API namespace via dedicated path → `GET /ui/sites`.
  */
 @Controller()
 export class SiteHtmlController {
     constructor(private readonly siteService: SiteService) {}
 
-    @Get('sites')
+    @Get('ui/sites')
     @Render('sites/index')
     async sitesList(): Promise<{ sites: Awaited<ReturnType<SiteService['listSites']>> }> {
         const sites = await this.siteService.listSites();

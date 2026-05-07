@@ -15,7 +15,6 @@ async function bootstrap() {
     nestApplication.setGlobalPrefix('api', {
         exclude: [
             { path: '/', method: RequestMethod.GET },
-            { path: 'sites', method: RequestMethod.GET },
         ],
     });
 

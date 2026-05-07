@@ -19,7 +19,7 @@ export class SiteService {
 
     async listSites(): Promise<Array<SiteResponseDto>> {
         const sites = await this.siteRepository.findAll();
-        return sites.map(site => this.toResponse(site));
+        return sites.map(site => SiteResponseDto.fromEntity(site));
     }
 
     async getSiteById(id: string): Promise<SiteResponseDto> {
@@ -27,7 +27,7 @@ export class SiteService {
         if (!site) {
             throw new SiteNotFoundException(id);
         }
-        return this.toResponse(site);
+        return SiteResponseDto.fromEntity(site);
     }
 
     async createSite(dto: CreateSiteRequestDto): Promise<SiteResponseDto> {
@@ -55,7 +55,7 @@ export class SiteService {
         });
 
         await this.siteRepository.save(site);
-        return this.toResponse(site);
+        return SiteResponseDto.fromEntity(site);
     }
 
     async updateSite(id: string, dto: UpdateSiteRequestDto): Promise<SiteResponseDto> {
@@ -64,8 +64,8 @@ export class SiteService {
             throw new SiteNotFoundException(id);
         }
 
-        const newName = dto.name.trim();
-        if (newName !== site.name) {
+        const newName = dto.name?.trim();
+        if (newName !== undefined && newName !== site.name) {
             const nameTaken = await this.siteRepository.existsAnotherWithName(newName, id);
             if (nameTaken) {
                 throw new SiteConflictException(`Site with name "${newName}" already exists.`, {
@@ -74,8 +74,8 @@ export class SiteService {
             }
         }
 
-        const newSlug = dto.slug.trim().toLowerCase();
-        if (newSlug !== site.slug) {
+        const newSlug = dto.slug?.trim().toLowerCase();
+        if (newSlug !== undefined && newSlug !== site.slug) {
             const slugTaken = await this.siteRepository.existsAnotherWithSlug(newSlug, id);
             if (slugTaken) {
                 throw new SiteConflictException(`Site with slug "${newSlug}" already exists.`, {
@@ -84,9 +84,9 @@ export class SiteService {
             }
         }
 
-        const updated = site.withUpdatedFields(this.requestToPayload(dto), new Date());
+        const updated = site.withUpdatedFields(dto.toPartialPayload(), new Date());
         await this.siteRepository.save(updated);
-        return this.toResponse(updated);
+        return SiteResponseDto.fromEntity(updated);
     }
 
     async deleteSite(id: string): Promise<void> {
@@ -115,20 +115,4 @@ export class SiteService {
         };
     }
 
-    private toResponse(site: SiteDomainEntity): SiteResponseDto {
-        return {
-            id: site.id,
-            name: site.name,
-            slug: site.slug,
-            industry: site.industry,
-            defaultLanguage: site.defaultLanguage,
-            contactEmail: site.contactEmail,
-            phone: site.phone,
-            legalEntityName: site.legalEntityName,
-            primaryCustomDomain: site.primaryCustomDomain,
-            publishedAt: site.publishedAt ? site.publishedAt.toISOString() : null,
-            createdAt: site.createdAt.toISOString(),
-            updatedAt: site.getUpdatedAt().toISOString(),
-        };
-    }
 }
