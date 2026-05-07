@@ -13,7 +13,13 @@ describe('CreatePostWithMediaUseCase', () => {
 
     function createSite(): SiteDomainEntity {
         const now = new Date();
-        return new SiteDomainEntity(siteId, 'My Site', 'my-site', now, now);
+        return SiteDomainEntity.rehydrate({
+            id: siteId,
+            name: 'My Site',
+            slug: 'my-site',
+            createdAt: now,
+            updatedAt: now,
+        });
     }
 
     function createDto(overrides: Partial<CreatePostWithMediaRequestDto> = {}): CreatePostWithMediaRequestDto {
@@ -33,8 +39,14 @@ describe('CreatePostWithMediaUseCase', () => {
 
     it('creates post and media in happy path', async () => {
         const siteRepository: jest.Mocked<ISiteRepository> = {
+            findAll: jest.fn(),
             save: jest.fn(),
             findById: jest.fn().mockResolvedValue(createSite()),
+            findByName: jest.fn(),
+            findBySlug: jest.fn(),
+            existsAnotherWithName: jest.fn(),
+            existsAnotherWithSlug: jest.fn(),
+            deleteById: jest.fn(),
         };
         const postRepository: jest.Mocked<IPostRepository> = {
             save: jest.fn(),
@@ -74,8 +86,14 @@ describe('CreatePostWithMediaUseCase', () => {
 
     it('throws SiteNotFoundException when site does not exist', async () => {
         const siteRepository: jest.Mocked<ISiteRepository> = {
+            findAll: jest.fn(),
             save: jest.fn(),
             findById: jest.fn().mockResolvedValue(null),
+            findByName: jest.fn(),
+            findBySlug: jest.fn(),
+            existsAnotherWithName: jest.fn(),
+            existsAnotherWithSlug: jest.fn(),
+            deleteById: jest.fn(),
         };
         const postRepository = { findBySiteAndTitle: jest.fn() } as unknown as IPostRepository;
         const mediaRepository = { save: jest.fn() } as unknown as IMediaRepository;
@@ -88,8 +106,14 @@ describe('CreatePostWithMediaUseCase', () => {
 
     it('throws PostConflictException when title already exists for site', async () => {
         const siteRepository: jest.Mocked<ISiteRepository> = {
+            findAll: jest.fn(),
             save: jest.fn(),
             findById: jest.fn().mockResolvedValue(createSite()),
+            findByName: jest.fn(),
+            findBySlug: jest.fn(),
+            existsAnotherWithName: jest.fn(),
+            existsAnotherWithSlug: jest.fn(),
+            deleteById: jest.fn(),
         };
         const postRepository: jest.Mocked<IPostRepository> = {
             save: jest.fn(),
