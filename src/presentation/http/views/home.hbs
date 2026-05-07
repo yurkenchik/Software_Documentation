@@ -4,12 +4,315 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{{title}}</title>
+  <style>
+    :root {
+      --bg-main: radial-gradient(1300px 500px at 10% -10%, #44070f 0%, rgba(68,7,15,0) 60%),
+                 radial-gradient(900px 500px at 100% 0%, #32040b 0%, rgba(50,4,11,0) 55%),
+                 linear-gradient(135deg, #060607 0%, #0b0b0d 55%, #16090d 100%);
+      --text-main: #f4f4f5;
+      --text-muted: #b6b8c0;
+      --card-bg: rgba(13, 13, 17, 0.78);
+      --card-border: rgba(220, 38, 38, 0.28);
+      --input-bg: rgba(21, 21, 27, 0.95);
+      --input-border: rgba(239, 68, 68, 0.35);
+      --button-bg: linear-gradient(135deg, #991b1b 0%, #dc2626 65%, #ef4444 100%);
+      --button-text: #ffffff;
+      --button-border: rgba(248, 113, 113, 0.45);
+      --button-secondary-bg: rgba(17, 17, 23, 0.8);
+      --button-secondary-text: #f5f5f5;
+      --output-bg: #05070f;
+      --output-text: #f3f4f6;
+      --code-bg: rgba(239, 68, 68, 0.12);
+      --code-text: #fecaca;
+      --shadow-main: 0 20px 45px rgba(0, 0, 0, 0.4);
+    }
+    body.theme-light {
+      --bg-main: linear-gradient(135deg, #fdf2f2 0%, #fff1f2 55%, #ffffff 100%);
+      --text-main: #111827;
+      --text-muted: #4b5563;
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-border: rgba(239, 68, 68, 0.2);
+      --input-bg: #ffffff;
+      --input-border: rgba(209, 213, 219, 0.9);
+      --button-bg: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%);
+      --button-text: #ffffff;
+      --button-border: rgba(185, 28, 28, 0.3);
+      --button-secondary-bg: #ffffff;
+      --button-secondary-text: #111827;
+      --output-bg: #0f172a;
+      --output-text: #f8fafc;
+      --code-bg: #fee2e2;
+      --code-text: #7f1d1d;
+      --shadow-main: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+    body { font-family: system-ui, sans-serif; margin: 0; background: var(--bg-main); color: var(--text-main); min-height: 100vh; }
+    .container { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+    .header { margin-bottom: 16px; }
+    .header h1 { margin: 0 0 8px; font-size: 28px; }
+    .header p { margin: 0; color: var(--text-muted); }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; box-shadow: var(--shadow-main); backdrop-filter: blur(6px); }
+    .card h2 { margin: 0 0 12px; font-size: 18px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .row.single { grid-template-columns: 1fr; }
+    input, textarea, button {
+      font: inherit; border-radius: 8px; border: 1px solid var(--input-border); padding: 8px 10px;
+    }
+    input, textarea { background: var(--input-bg); color: var(--text-main); }
+    input::placeholder, textarea::placeholder { color: var(--text-muted); }
+    textarea { min-height: 90px; resize: vertical; }
+    button { cursor: pointer; background: var(--button-bg); color: var(--button-text); border: 1px solid var(--button-border); transition: transform .12s ease, filter .12s ease; }
+    button:hover { transform: translateY(-1px); filter: brightness(1.04); }
+    button.secondary { background: var(--button-secondary-bg); color: var(--button-secondary-text); }
+    .muted { color: var(--text-muted); font-size: 13px; }
+    .output { white-space: pre-wrap; word-break: break-word; background: var(--output-bg); color: var(--output-text); border-radius: 10px; padding: 12px; min-height: 220px; border: 1px solid var(--card-border); }
+    .errorBox { background: #fee2e2; color: #7f1d1d; border: 1px solid #fecaca; border-radius: 10px; padding: 12px; display: none; margin-top: 10px; }
+    code { background: var(--code-bg); color: var(--code-text); padding: 1px 5px; border-radius: 5px; }
+    .response-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: .3px;
+      border: 1px solid transparent;
+    }
+    .badge.ok { background: rgba(16, 185, 129, 0.18); color: #34d399; border-color: rgba(16, 185, 129, 0.35); }
+    .badge.error { background: rgba(239, 68, 68, 0.18); color: #f87171; border-color: rgba(239, 68, 68, 0.35); }
+    .response-meta { color: var(--text-muted); font-size: 13px; }
+    .json-block {
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 8px;
+      padding: 10px;
+      margin-top: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+    @media (max-width: 940px) { .grid { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
-  <main style="font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem;">
-    <h1>{{title}}</h1>
-    <p>{{message}}</p>
-    <p class="muted" style="color: #555;">JSON API is under <code>/api</code> (e.g. <code>/api/sites</code>).</p>
+  <main class="container">
+    <section class="header">
+      <div class="topbar">
+        <div></div>
+        <button id="themeToggle" class="secondary" onclick="toggleTheme()">Switch Theme</button>
+      </div>
+      <h1>{{title}}</h1>
+      <p>{{message}}</p>
+      <p class="muted">One-page UI for <code>/api/sites</code> CRUD and response/error preview. HTML list page: <code>/ui/sites</code>.</p>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Create Site</h2>
+        <div class="row">
+          <input id="createName" placeholder="Name" />
+          <input id="createSlug" placeholder="Slug" />
+        </div>
+        <div class="row">
+          <input id="createIndustry" placeholder="Industry" />
+          <input id="createDefaultLanguage" placeholder="Default Language (e.g. en)" />
+        </div>
+        <div class="row">
+          <input id="createContactEmail" placeholder="Contact Email" />
+          <input id="createPhone" placeholder="Phone" />
+        </div>
+        <div class="row">
+          <input id="createLegalEntityName" placeholder="Legal Entity Name" />
+          <input id="createPrimaryCustomDomain" placeholder="Primary Custom Domain" />
+        </div>
+        <div class="row single">
+          <button onclick="createSite()">POST /api/sites</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>List / Get Site</h2>
+        <div class="row single">
+          <button class="secondary" onclick="listSites()">GET /api/sites</button>
+        </div>
+        <div class="row">
+          <input id="getId" placeholder="Site ID" />
+          <button onclick="getSite()">GET /api/sites/:id</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Update Site</h2>
+        <div class="row">
+          <input id="updateId" placeholder="Site ID" />
+          <input id="updateName" placeholder="Name (optional)" />
+        </div>
+        <div class="row">
+          <input id="updateSlug" placeholder="Slug (optional)" />
+          <input id="updateIndustry" placeholder="Industry (optional)" />
+        </div>
+        <div class="row">
+          <input id="updateDefaultLanguage" placeholder="Default Language (optional)" />
+          <input id="updateContactEmail" placeholder="Contact Email (optional)" />
+        </div>
+        <div class="row">
+          <input id="updatePhone" placeholder="phone (optional)" />
+          <input id="updateLegalEntityName" placeholder="Legal Entity Name (optional)" />
+        </div>
+        <div class="row">
+          <input id="updatePrimaryCustomDomain" placeholder="Primary Custom Domain (optional)" />
+        </div>
+        <div class="row">
+          <div></div>
+          <button onclick="updateSite()">PATCH /api/sites/:id</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Delete Site</h2>
+        <div class="row">
+          <input id="deleteId" placeholder="Site ID" />
+          <button onclick="deleteSite()">DELETE /api/sites/:id</button>
+        </div>
+        <p class="muted">Expect HTTP 204 with no body on success.</p>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top: 16px;">
+      <h2>Response Preview</h2>
+      <div id="responseOutput" class="output">Run any action to see the JSON response...</div>
+      <div id="errorOutput" class="errorBox"></div>
+    </section>
   </main>
+
+  <script>
+    function formatJsonBlock(title, value) {
+      return '<div><strong>' + title + '</strong><pre class="json-block">' +
+        JSON.stringify(value, null, 2) + '</pre></div>';
+    }
+
+    function renderPrettyResponse(method, path, status, ok, data) {
+      const statusClass = ok ? 'ok' : 'error';
+      const safeData = data ?? {};
+      let html = '';
+      html += '<div class="response-head">';
+      html += '<span class="badge ' + statusClass + '">HTTP ' + status + '</span>';
+      html += '<span class="response-meta"><strong>' + method + '</strong> ' + path + '</span>';
+      html += '</div>';
+      html += formatJsonBlock('Response body', safeData);
+      return html;
+    }
+
+    async function apiRequest(method, path, body) {
+      const output = document.getElementById('responseOutput');
+      const errorBox = document.getElementById('errorOutput');
+      errorBox.style.display = 'none';
+      errorBox.textContent = '';
+
+      const options = { method, headers: { 'Content-Type': 'application/json' } };
+      if (body && Object.keys(body).length > 0) options.body = JSON.stringify(body);
+
+      try {
+        const res = await fetch(path, options);
+        const text = await res.text();
+        const data = text ? JSON.parse(text) : null;
+
+        output.innerHTML = renderPrettyResponse(method, path, res.status, res.ok, data);
+
+        if (!res.ok) {
+          const statusCode = data?.statusCode ?? res.status;
+          const code = data?.code ?? 'UNKNOWN_ERROR';
+          const message = data?.message ?? 'Request failed';
+          const context = data?.context ? JSON.stringify(data.context, null, 2) : '{}';
+          errorBox.style.display = 'block';
+          errorBox.textContent =
+            'Error\\n' +
+            'statusCode: ' + statusCode + '\\n' +
+            'code: ' + code + '\\n' +
+            'message: ' + message + '\\n' +
+            'context: ' + context;
+        }
+      } catch (err) {
+        output.innerHTML = renderPrettyResponse(method, path, 0, false, { error: String(err) });
+        errorBox.style.display = 'block';
+        errorBox.textContent = 'Could not complete request. Check server and payload.';
+      }
+    }
+
+    function createSite() {
+      const payload = {
+        name: document.getElementById('createName').value,
+        slug: document.getElementById('createSlug').value,
+        industry: document.getElementById('createIndustry').value,
+        defaultLanguage: document.getElementById('createDefaultLanguage').value,
+        contactEmail: document.getElementById('createContactEmail').value,
+        phone: document.getElementById('createPhone').value,
+        legalEntityName: document.getElementById('createLegalEntityName').value,
+        primaryCustomDomain: document.getElementById('createPrimaryCustomDomain').value,
+      };
+      apiRequest('POST', '/api/sites', {
+        ...payload
+      });
+    }
+
+    function listSites() { apiRequest('GET', '/api/sites'); }
+
+    function getSite() {
+      const id = document.getElementById('getId').value.trim();
+      if (!id) return;
+      apiRequest('GET', '/api/sites/' + encodeURIComponent(id));
+    }
+
+    function updateSite() {
+      const id = document.getElementById('updateId').value.trim();
+      if (!id) return;
+      const payload = {};
+      const name = document.getElementById('updateName').value.trim();
+      const slug = document.getElementById('updateSlug').value.trim();
+      const industry = document.getElementById('updateIndustry').value.trim();
+      const defaultLanguage = document.getElementById('updateDefaultLanguage').value.trim();
+      const contactEmail = document.getElementById('updateContactEmail').value.trim();
+      const phone = document.getElementById('updatePhone').value.trim();
+      const legalEntityName = document.getElementById('updateLegalEntityName').value.trim();
+      const primaryCustomDomain = document.getElementById('updatePrimaryCustomDomain').value.trim();
+      if (name) payload.name = name;
+      if (slug) payload.slug = slug;
+      if (industry) payload.industry = industry;
+      if (defaultLanguage) payload.defaultLanguage = defaultLanguage;
+      if (contactEmail) payload.contactEmail = contactEmail;
+      if (phone) payload.phone = phone;
+      if (legalEntityName) payload.legalEntityName = legalEntityName;
+      if (primaryCustomDomain) payload.primaryCustomDomain = primaryCustomDomain;
+      apiRequest('PATCH', '/api/sites/' + encodeURIComponent(id), payload);
+    }
+
+    function deleteSite() {
+      const id = document.getElementById('deleteId').value.trim();
+      if (!id) return;
+      apiRequest('DELETE', '/api/sites/' + encodeURIComponent(id));
+    }
+
+    function setTheme(theme) {
+      if (theme === 'light') {
+        document.body.classList.add('theme-light');
+      } else {
+        document.body.classList.remove('theme-light');
+      }
+      localStorage.setItem('ui-theme', theme);
+      document.getElementById('themeToggle').textContent =
+        theme === 'light' ? 'Switch to Dark Red' : 'Switch to Light';
+    }
+
+    function toggleTheme() {
+      const current = document.body.classList.contains('theme-light') ? 'light' : 'dark';
+      setTheme(current === 'light' ? 'dark' : 'light');
+    }
+
+    (() => {
+      const saved = localStorage.getItem('ui-theme') || 'dark';
+      setTheme(saved);
+    })();
+  </script>
 </body>
 </html>
