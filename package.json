@@ -18,7 +18,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "generate:csv": "ts-node -r tsconfig-paths/register src/tools/generate-import-csv.ts",
-    "stream:csv": "ts-node -r tsconfig-paths/register src/tools/stream-csv-rows.cli.ts"
+    "stream:csv": "ts-node -r tsconfig-paths/register src/tools/stream-csv-rows.cli.ts",
+    "fetch:dataset": "ts-node -r tsconfig-paths/register src/tools/fetch-dallas-dataset.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -30,6 +31,7 @@
     "class-validator": "^0.15.1",
     "csv-parse": "^5.5.6",
     "hbs": "^4.2.0",
+    "ioredis": "^5.10.1",
     "kafkajs": "^2.2.4",
     "mongoose": "^8.8.0",
     "reflect-metadata": "^0.2.2",
@@ -42,6 +44,7 @@
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@types/express": "^5.0.0",
+    "@types/ioredis": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
