@@ -10,6 +10,8 @@ export const ExceptionCodes = {
         },
         SITE: {
             NOT_FOUND: 'Domain.SITE.NOT_FOUND',
+            CONFLICT: 'Domain.SITE.CONFLICT',
+            VALIDATION_FAILED: 'Domain.SITE.VALIDATION_FAILED',
         },
         POST: {
             NOT_FOUND: 'Domain.POST.NOT_FOUND',

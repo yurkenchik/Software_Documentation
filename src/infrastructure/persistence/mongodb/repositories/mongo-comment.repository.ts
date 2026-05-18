@@ -12,7 +12,7 @@ export class MongoCommentRepository implements ICommentRepository {
         @InjectModel(CommentMongoDocument.name)
         private readonly model: Model<CommentMongoDocument>,
     ) {}
-
+w
     async save(comment: CommentDomainEntity): Promise<void> {
         const item = CommentMongoAdapter.adaptDomainToMongoDocument(comment);
         await this.model.updateOne({ _id: comment.id }, item, { upsert: true });

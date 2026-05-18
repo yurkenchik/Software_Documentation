@@ -23,7 +23,13 @@ export class SiteRowHandler implements IRowHandler {
         const createdAtDate = new Date(createdAt);
         const updatedAtDate = new Date(updatedAt);
 
-        const site = new SiteDomainEntity(id, name, slug, createdAtDate, updatedAtDate);
+        const site = SiteDomainEntity.rehydrate({
+            id,
+            name,
+            slug,
+            createdAt: createdAtDate,
+            updatedAt: updatedAtDate,
+        });
         await this.siteRepository.save(site);
     }
 }

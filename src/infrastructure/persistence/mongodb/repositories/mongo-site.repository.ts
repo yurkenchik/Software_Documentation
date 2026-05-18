@@ -13,9 +13,9 @@ export class MongoSiteRepository implements ISiteRepository {
         private readonly model: Model<SiteMongoDocument>,
     ) {}
 
-    async save(site: SiteDomainEntity): Promise<void> {
-        const item = SiteMongoAdapter.adaptDomainToMongo(site);
-        await this.model.updateOne({ _id: site.id }, item, { upsert: true });
+    async findAll(): Promise<Array<SiteDomainEntity>> {
+        const documents = await this.model.find().lean().exec();
+        return documents.map((doc) => SiteMongoAdapter.adaptMongoToDomainEntity(doc as SiteMongoDocument));
     }
 
     async findById(id: string): Promise<SiteDomainEntity | null> {
@@ -24,5 +24,48 @@ export class MongoSiteRepository implements ISiteRepository {
             return null;
         }
         return SiteMongoAdapter.adaptMongoToDomainEntity(document as SiteMongoDocument);
+    }
+
+    async findByName(name: string): Promise<SiteDomainEntity | null> {
+        const trimmed = name.trim();
+        const document = await this.model.findOne({ name: trimmed }).lean().exec();
+        if (!document) {
+            return null;
+        }
+        return SiteMongoAdapter.adaptMongoToDomainEntity(document as SiteMongoDocument);
+    }
+
+    async findBySlug(slug: string): Promise<SiteDomainEntity | null> {
+        const normalized = slug.trim().toLowerCase();
+        const document = await this.model.findOne({ slug: normalized }).lean().exec();
+        if (!document) {
+            return null;
+        }
+        return SiteMongoAdapter.adaptMongoToDomainEntity(document as SiteMongoDocument);
+    }
+
+    async existsAnotherWithName(name: string, excludeId: string): Promise<boolean> {
+        const count = await this.model.countDocuments({
+            name: name.trim(),
+            _id: { $ne: excludeId },
+        });
+        return count > 0;
+    }
+
+    async existsAnotherWithSlug(slug: string, excludeId: string): Promise<boolean> {
+        const count = await this.model.countDocuments({
+            slug: slug.trim().toLowerCase(),
+            _id: { $ne: excludeId },
+        });
+        return count > 0;
+    }
+
+    async save(site: SiteDomainEntity): Promise<void> {
+        const item = SiteMongoAdapter.adaptDomainToMongo(site);
+        await this.model.updateOne({ _id: site.id }, item, { upsert: true });
+    }
+
+    async deleteById(id: string): Promise<void> {
+        await this.model.deleteOne({ _id: id }).exec();
     }
 }

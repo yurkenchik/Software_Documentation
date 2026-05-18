@@ -20,6 +20,30 @@ function getHttpStatusForCode(code: string): number {
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
+    if (code === ExceptionCodes.Domain.SITE.NOT_FOUND) {
+        return HttpStatus.NOT_FOUND;
+    }
+
+    if (code === ExceptionCodes.Domain.SITE.CONFLICT) {
+        return HttpStatus.CONFLICT;
+    }
+
+    if (code === ExceptionCodes.Domain.SITE.VALIDATION_FAILED) {
+        return HttpStatus.BAD_REQUEST;
+    }
+
+    if (code === ExceptionCodes.Domain.POST.NOT_FOUND) {
+        return HttpStatus.NOT_FOUND;
+    }
+
+    if (code === ExceptionCodes.Domain.POST.CONFLICT) {
+        return HttpStatus.CONFLICT;
+    }
+
+    if (code === ExceptionCodes.Domain.CONTENT.VALIDATION_FAILED) {
+        return HttpStatus.BAD_REQUEST;
+    }
+
     return HttpStatus.BAD_REQUEST;
 }
 
